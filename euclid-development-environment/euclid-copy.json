@@ -1,0 +1,91 @@
+{
+  "github_token": "__place__holder__",
+  "version": "0.13.0",
+  "tessellation_version": "2.8.1",
+  "ref_type": "tag",
+  "project_name": "nft",
+  "framework": {
+    "name": "currency",
+    "modules": [
+      "data"
+    ],
+    "version": "v2.8.0",
+    "ref_type": "tag"
+  },
+  "layers": [
+    "global-l0",
+    "metagraph-l0",
+    "currency-l1",
+    "data-l1"
+  ],
+  "nodes": [
+    {
+      "name": "metagraph-node-1",
+      "key_file": {
+        "name": "token-key.p12",
+        "alias": "token-key",
+        "password": "password"
+      }
+    },
+    {
+      "name": "metagraph-node-2",
+      "key_file": {
+        "name": "token-key-1.p12",
+        "alias": "token-key-1",
+        "password": "password"
+      }
+    },
+    {
+      "name": "metagraph-node-3",
+      "key_file": {
+        "name": "token-key-2.p12",
+        "alias": "token-key-2",
+        "password": "password"
+      }
+    }
+  ],
+  "docker": {
+    "start_grafana_container": false
+  },
+  "snapshot_fees": {
+    "owner": {
+      "key_file": {
+        "name": "token-key.p12",
+        "alias": "token-key",
+        "password": "password"
+      }
+    },
+    "staking": {
+      "key_file": {
+        "name": "token-key-1.p12",
+        "alias": "token-key-1",
+        "password": "password"
+      }
+    }
+  },
+  "deploy": {
+    "network": {
+      "name": "integrationnet|mainnet",
+      "gl0_node": {
+        "ip": ":gl0_node_ip",
+        "id": ":gl0_node_id",
+        "public_port": ":gl0_node_public_port"
+      }
+    },
+    "ansible": {
+      "hosts": "infra/ansible/remote/hosts.ansible.yml",
+      "nodes": {
+        "playbooks": {
+          "deploy": "infra/ansible/remote/nodes/playbooks/deploy/deploy.ansible.yml",
+          "start": "infra/ansible/remote/nodes/playbooks/start/start.ansible.yml"
+        }
+      },
+      "monitoring": {
+        "playbooks": {
+          "deploy": "infra/ansible/remote/monitoring/playbooks/deploy/deploy.ansible.yml",
+          "start": "infra/ansible/remote/monitoring/playbooks/start/start.ansible.yml"
+        }
+      }
+    }
+  }
+}
