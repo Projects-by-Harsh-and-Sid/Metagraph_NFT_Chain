@@ -1,36 +1,59 @@
-import Dependencies.*
-import sbt.*
+# build.sbt
+```scala
+import Dependencies._
 
 ThisBuild / organization := "com.my.nft"
 ThisBuild / scalaVersion := "2.13.10"
 ThisBuild / evictionErrorLevel := Level.Warn
 
-ThisBuild / assemblyMergeStrategy := {
-  case "logback.xml" => MergeStrategy.first
-  case x if x.contains("io.netty.versions.properties") => MergeStrategy.discard
-  case PathList(xs@_*) if xs.last == "module-info.class" => MergeStrategy.first
-  case x =>
-    val oldStrategy = (assembly / assemblyMergeStrategy).value
-    oldStrategy(x)
-}
+resolvers += Resolver.githubPackages("abankowski", "http-request-signer")
 
-lazy val root = (project in file(".")).
-  settings(
-    name := "nft"
-  ).aggregate(sharedData, currencyL0, currencyL1, dataL1)
+// Runtime configuration
+Runtime / javaOptions ++= Seq(
+  "-XX:+UseG1GC",
+  "-XX:MaxGCPauseMillis=100",
+  "-XX:+UseStringDeduplication",
+  "-Dconfig.override_with_env_vars=true"
+)
 
-lazy val sharedData = (project in file("modules/shared_data"))
-  .enablePlugins(AshScriptPlugin)
-  .enablePlugins(BuildInfoPlugin)
-  .enablePlugins(JavaAppPackaging)
+val sharedSettings = Seq(
+  scalacOptions ++= Seq("-Xsource:3"),
+  assembly / assemblyMergeStrategy := {
+    case "logback.xml" => MergeStrategy.first
+    case x if x.contains("io.netty.versions.properties") => MergeStrategy.discard
+    case PathList("scala", xs @ _*) => MergeStrategy.first
+    case x =>
+      val oldStrategy = (assembly / assemblyMergeStrategy).value
+      oldStrategy(x)
+  },
+  // Set current version here
+  version := "0.1.0-SNAPSHOT"
+)
+
+lazy val root = (project in file("."))
+  .aggregate(shared, l0, l1, dataL1)
   .settings(
-    name := "nft-shared_data",
-    scalacOptions ++= List("-Ymacro-annotations", "-Yrangepos", "-Wconf:cat=unused:info", "-language:reflectiveCalls"),
-    buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
-    buildInfoPackage := "com.my.nft.shared_data",
-    resolvers += Resolver.mavenLocal,
-    resolvers += Resolver.githubPackages("abankowski", "http-request-signer"),
-    Defaults.itSettings,
+    name := "nft-metagraph"
+  )
+
+lazy val runner = (project in file("modules/runner"))
+  .settings(sharedSettings)
+  .settings(
+    name := "runner",
+    libraryDependencies ++= Seq(
+      CompilerPlugin.kindProjector,
+      CompilerPlugin.betterMonadicFor,
+      CompilerPlugin.semanticDB,
+      Libraries.tessellationNodeShared,
+      Libraries.requests
+    )
+  )
+  .dependsOn(l0, l1, dataL1)
+
+lazy val shared = (project in file("modules/shared"))
+  .settings(sharedSettings)
+  .settings(
+    name := "shared",
     libraryDependencies ++= Seq(
       CompilerPlugin.kindProjector,
       CompilerPlugin.betterMonadicFor,
@@ -38,18 +61,25 @@ lazy val sharedData = (project in file("modules/shared_data"))
       Libraries.tessellationNodeShared
     )
   )
-lazy val currencyL1 = (project in file("modules/l1"))
-  .enablePlugins(AshScriptPlugin)
-  .enablePlugins(BuildInfoPlugin)
-  .enablePlugins(JavaAppPackaging)
+
+lazy val l0 = (project in file("modules/l0"))
+  .settings(sharedSettings)
   .settings(
-    name := "nft-currency-l1",
-    scalacOptions ++= List("-Ymacro-annotations", "-Yrangepos", "-Wconf:cat=unused:info", "-language:reflectiveCalls"),
-    buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
-    buildInfoPackage := "com.my.nft.l1",
-    resolvers += Resolver.mavenLocal,
-    resolvers += Resolver.githubPackages("abankowski", "http-request-signer"),
-    Defaults.itSettings,
+    name := "l0",
+    libraryDependencies ++= Seq(
+      CompilerPlugin.kindProjector,
+      CompilerPlugin.betterMonadicFor,
+      CompilerPlugin.semanticDB,
+      Libraries.tessellationCurrencyL0,
+      Libraries.requests
+    )
+  )
+  .dependsOn(shared)
+
+lazy val l1 = (project in file("modules/l1"))
+  .settings(sharedSettings)
+  .settings(
+    name := "l1",
     libraryDependencies ++= Seq(
       CompilerPlugin.kindProjector,
       CompilerPlugin.betterMonadicFor,
@@ -57,44 +87,12 @@ lazy val currencyL1 = (project in file("modules/l1"))
       Libraries.tessellationCurrencyL1
     )
   )
-
-lazy val currencyL0 = (project in file("modules/l0"))
-  .enablePlugins(AshScriptPlugin)
-  .enablePlugins(BuildInfoPlugin)
-  .enablePlugins(JavaAppPackaging)
-  .dependsOn(sharedData)
-  .settings(
-    name := "nft-currency-l0",
-    scalacOptions ++= List("-Ymacro-annotations", "-Yrangepos", "-Wconf:cat=unused:info", "-language:reflectiveCalls"),
-    buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
-    buildInfoPackage := "com.my.nft.l0",
-    resolvers += Resolver.mavenLocal,
-    resolvers += Resolver.githubPackages("abankowski", "http-request-signer"),
-    Defaults.itSettings,
-    libraryDependencies ++= Seq(
-      CompilerPlugin.kindProjector,
-      CompilerPlugin.betterMonadicFor,
-      CompilerPlugin.semanticDB,
-      Libraries.declineRefined,
-      Libraries.declineCore,
-      Libraries.declineEffect,
-      Libraries.tessellationCurrencyL0
-    )
-  )
+  .dependsOn(shared)
 
 lazy val dataL1 = (project in file("modules/data_l1"))
-  .enablePlugins(AshScriptPlugin)
-  .enablePlugins(BuildInfoPlugin)
-  .enablePlugins(JavaAppPackaging)
-  .dependsOn(sharedData)
+  .settings(sharedSettings)
   .settings(
-    name := "nft-data_l1",
-    scalacOptions ++= List("-Ymacro-annotations", "-Yrangepos", "-Wconf:cat=unused:info", "-language:reflectiveCalls"),
-    buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
-    buildInfoPackage := "com.my.nft.data_l1",
-    resolvers += Resolver.mavenLocal,
-    resolvers += Resolver.githubPackages("abankowski", "http-request-signer"),
-    Defaults.itSettings,
+    name := "data_l1",
     libraryDependencies ++= Seq(
       CompilerPlugin.kindProjector,
       CompilerPlugin.betterMonadicFor,
@@ -102,3 +100,9 @@ lazy val dataL1 = (project in file("modules/data_l1"))
       Libraries.tessellationCurrencyL1
     )
   )
+  .dependsOn(shared)
+
+// Scalafix
+ThisBuild / scalafixDependencies += Libraries.organizeImports
+ThisBuild / semanticdbEnabled := true
+ThisBuild / semanticdbVersion := scalafixSemanticdb.revision
