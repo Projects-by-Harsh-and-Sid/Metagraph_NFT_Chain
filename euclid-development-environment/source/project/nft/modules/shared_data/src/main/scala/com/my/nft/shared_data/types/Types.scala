@@ -17,7 +17,6 @@ object Types {
     creationDateTimestamp: Long,
     metadata             : Map[String, String],
     AI_data              : String,
-    API_Code_Identifier  : String
   )
 
   @derive(decoder, encoder)
@@ -92,6 +91,8 @@ object Types {
     name                 : String,
     description          : String,
     creationDateTimestamp: Long,
-    metadata             : Map[String, String]
+    metadata             : Map[String, String],
+    AI_data              : String,
+    apiResult            : String
   )
 }

@@ -6,6 +6,8 @@ import monocle.Monocle.toAppliedFocusOps
 import org.tessellation.currency.dataApplication.DataState
 import org.tessellation.schema.address.Address
 import org.tessellation.security.hash.Hash
+import requests.Response
+import io.circe.parser.decode
 
 object Combiners {
   def combineMintCollection(
@@ -28,7 +30,14 @@ object Combiners {
     state : DataState[NFTUpdatesState, NFTUpdatesCalculatedState]
   ): DataState[NFTUpdatesState, NFTUpdatesCalculatedState] = {
     val nowInTime = System.currentTimeMillis()
-    val newNFT = NFT(update.nftId, update.collectionId, update.owner, update.uri, update.name, update.description, nowInTime, update.metadata)
+
+
+    // val apiResponse: Response = requests.get("https://api.example.com/endpoint")
+    // val apiResult = if (apiResponse.statusCode == 200) 
+    //                   {decode[String](apiResponse.text()).getOrElse("Failed to parse API response")} 
+    //                   else {"API call failed"}
+
+    val newNFT = NFT(update.nftId, update.collectionId, update.owner, update.uri, update.name, update.description, nowInTime, update.metadata, update.AI_data)
 
     val collection = state.calculated.collections(update.collectionId)
     val collectionNFTs = collection.nfts + (update.nftId -> newNFT)
@@ -65,7 +74,7 @@ object Combiners {
         collection.nfts
           .get(update.nftId)
           .fold(state) { nft =>
-            val updatedNFT = NFT(nft.id, nft.collectionId, update.toAddress, nft.uri, nft.name, nft.description, nft.creationDateTimestamp, nft.metadata)
+            val updatedNFT = NFT(nft.id, nft.collectionId, update.toAddress, nft.uri, nft.name, nft.description, nft.creationDateTimestamp, nft.metadata,nft.AI_data)
             val collectionNFTs = collection.nfts + (nft.id -> updatedNFT)
             val newState = Collection(collection.id, collection.owner, collection.name, collection.creationDateTimestamp, collectionNFTs)
 

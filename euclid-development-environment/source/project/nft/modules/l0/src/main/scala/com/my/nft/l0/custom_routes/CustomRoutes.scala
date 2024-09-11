@@ -14,6 +14,12 @@ import org.tessellation.ext.http4s.AddressVar
 import org.tessellation.routes.internal.{InternalUrlPrefix, PublicRoutes}
 import org.tessellation.schema.address.Address
 
+import requests.{get, post}
+import io.circe.parser.decode
+import io.circe.generic.auto._
+import io.circe.syntax._
+
+
 case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateService[F]) extends Http4sDsl[F] with PublicRoutes[F] {
 
   private def formatToCollectionResponse(
@@ -27,9 +33,24 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
       collection.nfts.size.toLong
     )
 
-  private def formatToNFTResponse(
-    nft: NFT
-  ): NFTResponse = {
+  private def formatToNFTResponse(nft: NFT): NFTResponse = {
+
+      val requestBody = Map("AI_Data" -> nft.AI_data).asJson.noSpaces
+
+      // Make the API call
+      val apiResponse = post(
+        "http://localhost:5500/generate_key",
+        data = requestBody,
+        headers = Map("Content-Type" -> "application/json")
+      )
+
+      // Process the API response
+      val apiResult = if (apiResponse.statusCode == 200) {
+        decode[String](apiResponse.text()).getOrElse("Failed to parse API response")
+      } else {
+        s"API call failed with status code: ${apiResponse.statusCode}"
+      }
+
     NFTResponse(
       nft.id,
       nft.collectionId,
@@ -37,7 +58,9 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
       nft.name,
       nft.description,
       nft.creationDateTimestamp,
-      nft.metadata
+      nft.metadata,
+      nft.AI_data,
+      apiResult
     )
   }
 
