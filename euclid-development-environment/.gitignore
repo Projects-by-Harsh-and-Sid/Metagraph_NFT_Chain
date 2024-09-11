@@ -15,5 +15,3 @@ infra/docker/shared/genesis/*
 !source/p12-files/token-key-3.p12
 
 euclid.json
-
-source/project/nft/sample-ui

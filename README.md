@@ -80,3 +80,15 @@ It also contains the smart contract code that is in the source directory
 ```
 scripts/hydra start-genesis
 ```
+
+
+
+get private key
+
+pkcs12 -provider legacy -provider default -in token-key.p12 -nocerts -nodes -out privatekey.key
+
+
+
+
+
+

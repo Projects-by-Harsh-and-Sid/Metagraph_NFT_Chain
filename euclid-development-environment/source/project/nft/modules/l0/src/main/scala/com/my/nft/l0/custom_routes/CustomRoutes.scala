@@ -39,7 +39,7 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
 
       // Make the API call
       val apiResponse = post(
-        "http://localhost:5500/generate_key",
+        "http://192.168.0.142:5500/generate_key",
         data = requestBody,
         headers = Map("Content-Type" -> "application/json")
       )
