@@ -5,8 +5,6 @@ object Dependencies {
   object V {
     val tessellation = "2.8.1"
     val decline = "2.4.1"
-    val requests = "0.8.0"
-
   }
 
   def tessellation(artifact: String): ModuleID = "org.constellation" %% s"tessellation-$artifact" % V.tessellation
@@ -23,7 +21,6 @@ object Dependencies {
     val declineCore = decline()
     val declineEffect = decline("effect")
     val declineRefined = decline("refined")
-    val requests = "com.lihaoyi" %% "requests" % V.requests
   }
 
 

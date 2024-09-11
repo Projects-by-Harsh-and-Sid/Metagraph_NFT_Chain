@@ -60,7 +60,7 @@ scripts/hydra install-template
 ```
 
 ```
-scripts/hydra install-template vft in this case
+scripts/hydra install-template nft in this case
 ```
 
 

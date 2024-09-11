@@ -6,53 +6,6 @@ import org.tessellation.currency.dataApplication.{DataCalculatedState, DataOnCha
 import org.tessellation.schema.address.Address
 
 object Types {
-
-  @derive(decoder, encoder)
-  sealed trait NFTUpdate extends DataUpdate
-
-  @derive(decoder, encoder)
-  case class MintCollection(
-    name: String
-  ) extends NFTUpdate
-
-  @derive(decoder, encoder)
-  case class MintNFT(
-    owner       : Address,
-    collectionId: String,
-    nftId       : Long,
-    uri         : String,
-    name        : String,
-    description : String,
-    metadata    : Map[String, String],
-    pdfData     : String,  // Base64 encoded PDF data
-    imageData   : String,  // Base64 encoded image data
-    modelName   : String,
-    rag         : String   // RAG data returned from backend
-  ) extends NFTUpdate
-
-  @derive(decoder, encoder)
-  case class TransferCollection(
-    fromAddress : Address,
-    toAddress   : Address,
-    collectionId: String
-  ) extends NFTUpdate
-
-  @derive(decoder, encoder)
-  case class TransferNFT(
-    fromAddress : Address,
-    toAddress   : Address,
-    collectionId: String,
-    nftId       : Long
-  ) extends NFTUpdate
-
-  @derive(decoder, encoder)
-  case class StartChat(
-    nftId: Long
-  ) extends NFTUpdate
-
-
-
-
   @derive(decoder, encoder)
   case class NFT(
     id                   : Long,
@@ -62,7 +15,9 @@ object Types {
     name                 : String,
     description          : String,
     creationDateTimestamp: Long,
-    metadata             : Map[String, String]
+    metadata             : Map[String, String],
+    AI_data              : String,
+    API_Code_Identifier  : String
   )
 
   @derive(decoder, encoder)
@@ -90,7 +45,8 @@ object Types {
     uri         : String,
     name        : String,
     description : String,
-    metadata    : Map[String, String]
+    metadata    : Map[String, String],
+    AI_data              : String,
   ) extends NFTUpdate
 
   @derive(decoder, encoder)
