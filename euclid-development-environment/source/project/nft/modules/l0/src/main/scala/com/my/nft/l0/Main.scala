@@ -32,17 +32,17 @@ object Main
     "currency-l0",
     "currency L0 node",
     ClusterId(UUID.fromString("517c3a05-9219-471b-a54c-21b7d72f4ae5")),
-    metagraphVersion = MetagraphVersion.unsafeFrom(BuildInfo.version),
+    metagraphVersion    = MetagraphVersion.unsafeFrom(BuildInfo.version),
     tessellationVersion = TessellationVersion.unsafeFrom(BuildInfo.version)
   ) {
-  private def makeBaseDataApplicationL0Service(
-    calculatedStateService: CalculatedStateService[IO]
-  ): BaseDataApplicationL0Service[IO] = BaseDataApplicationL0Service(new DataApplicationL0Service[IO, NFTUpdate, NFTUpdatesState, NFTUpdatesCalculatedState] {
+  private def makeBaseDataApplicationL0Service(calculatedStateService: CalculatedStateService[IO]): 
+    BaseDataApplicationL0Service[IO] = BaseDataApplicationL0Service(new DataApplicationL0Service[IO, NFTUpdate, NFTUpdatesState, NFTUpdatesCalculatedState] 
+    
+    {
     override def genesis: DataState[NFTUpdatesState, NFTUpdatesCalculatedState] =
       DataState(NFTUpdatesState(List.empty), NFTUpdatesCalculatedState(Map.empty))
 
-    override def validateData(
-      state  : DataState[NFTUpdatesState, NFTUpdatesCalculatedState],
+    override def validateData(state  : DataState[NFTUpdatesState, NFTUpdatesCalculatedState],
       updates: NonEmptyList[Signed[NFTUpdate]]
     )(implicit context: L0NodeContext[IO]): IO[DataApplicationValidationErrorOr[Unit]] =
       LifecycleSharedFunctions.validateData[IO](state, updates)

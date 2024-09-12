@@ -17,9 +17,7 @@ import org.typelevel.log4cats.slf4j.Slf4jLogger
 object LifecycleSharedFunctions {
   private def logger[F[_] : Async]: SelfAwareStructuredLogger[F] = Slf4jLogger.getLoggerFromName[F]("ClusterApi")
 
-  def validateUpdate[F[_] : Async](
-    update: NFTUpdate
-  ): F[DataApplicationValidationErrorOr[Unit]] = Async[F].delay {
+  def validateUpdate[F[_] : Async](update: NFTUpdate): F[DataApplicationValidationErrorOr[Unit]] = Async[F].delay {
     update match {
       case mintCollection: MintCollection =>
         mintCollectionValidations(mintCollection, None)

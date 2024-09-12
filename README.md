@@ -88,7 +88,10 @@ get private key
 pkcs12 -provider legacy -provider default -in token-key.p12 -nocerts -nodes -out privatekey.key
 
 
+# for privare key use Eth keys
 
 
+- harsh chats have code ...
+- 
 
 

@@ -5,26 +5,34 @@ import org.tessellation.currency.dataApplication.DataApplicationValidationError
 import org.tessellation.currency.dataApplication.dataApplication.DataApplicationValidationErrorOr
 
 object Errors {
+  // Type Aliases
+  //-------------
   type DataApplicationValidationType = DataApplicationValidationErrorOr[Unit]
 
-  val valid: DataApplicationValidationType =
+  // Utility Functions
+  //------------------
+  val valid: DataApplicationValidationType = {
     ().validNec[DataApplicationValidationError]
-
-  implicit class DataApplicationValidationTypeOps[E <: DataApplicationValidationError](err: E) {
-    def invalid: DataApplicationValidationType =
-      err.invalidNec[Unit]
-
-    def unlessA(
-      cond: Boolean
-    ): DataApplicationValidationType =
-      if (cond) valid else invalid
-
-    def whenA(
-      cond: Boolean
-    ): DataApplicationValidationType =
-      if (cond) invalid else valid
   }
 
+  // Extension Methods
+  //------------------
+  implicit class DataApplicationValidationTypeOps[E <: DataApplicationValidationError](err: E) {
+    def invalid: DataApplicationValidationType = {
+      err.invalidNec[Unit]
+    }
+
+    def unlessA(cond: Boolean): DataApplicationValidationType = {
+      if (cond) valid else invalid
+    }
+
+    def whenA(cond: Boolean): DataApplicationValidationType = {
+      if (cond) invalid else valid
+    }
+  }
+
+  // Error Definitions
+  //------------------
   case object DuplicatedCollection extends DataApplicationValidationError {
     val message = "Duplicated collection"
   }
@@ -73,4 +81,3 @@ object Errors {
     val message = s"Invalid field size: $fieldName, maxSize: $maxSize"
   }
 }
-

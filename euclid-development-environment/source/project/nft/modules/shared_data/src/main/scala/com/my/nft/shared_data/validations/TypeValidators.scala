@@ -18,25 +18,19 @@ object TypeValidators {
       .get(collectionId)
   }
 
-  def validateIfCollectionIsUnique(
-    update: MintCollection,
-    state : DataState[NFTUpdatesState, NFTUpdatesCalculatedState]
-  ): DataApplicationValidationErrorOr[Unit] = {
-    val collectionId = Hash.fromBytes(Serializers.serializeUpdate(update)).toString
-    DuplicatedCollection.whenA(state.calculated.collections.contains(collectionId))
-  }
+  def validateIfCollectionIsUnique(update: MintCollection, state : DataState[NFTUpdatesState, NFTUpdatesCalculatedState]): 
+    
+    DataApplicationValidationErrorOr[Unit] = {
+                                                val collectionId = Hash.fromBytes(Serializers.serializeUpdate(update)).toString
+                                                DuplicatedCollection.whenA(state.calculated.collections.contains(collectionId))
+                                              }
 
-  def validateIfNFTUriIsValid(
-    update: MintNFT
-  ): DataApplicationValidationErrorOr[Unit] =
-    InvalidNFTUri.unlessA(isValidURL(update.uri))
+  def validateIfNFTUriIsValid(update: MintNFT): 
+    DataApplicationValidationErrorOr[Unit] = InvalidNFTUri.unlessA(isValidURL(update.uri))
 
-  def validateIfNFTUriIsUnique(
-    update: MintNFT,
-    state : DataState[NFTUpdatesState, NFTUpdatesCalculatedState]
-  ): DataApplicationValidationErrorOr[Unit] =
-    getCollectionById(update.collectionId, state)
-      .map { value =>
+  def validateIfNFTUriIsUnique(update: MintNFT,state : DataState[NFTUpdatesState, NFTUpdatesCalculatedState]): 
+    
+    DataApplicationValidationErrorOr[Unit] = getCollectionById(update.collectionId, state).map { value =>
         val uris = value.nfts.map { case (_, value) => value.uri }.toList
         NFTUriAlreadyExists.whenA(uris.contains(update.uri))
       }
