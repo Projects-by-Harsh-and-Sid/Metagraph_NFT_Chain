@@ -51,6 +51,8 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
         s"API call failed with status code: ${apiResponse.statusCode}"
       }
 
+      // val apiResult = "API call failed"; 
+
     NFTResponse(
       nft.id,
       nft.collectionId,

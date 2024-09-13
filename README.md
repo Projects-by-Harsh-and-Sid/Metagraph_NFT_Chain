@@ -95,3 +95,6 @@ pkcs12 -provider legacy -provider default -in token-key.p12 -nocerts -nodes -out
 - 
 
 
+Create Account using Stargazer Wallet and copy the private key to setup balance in genesis
+
+euclid-development-environment/source/metagraph-l0/genesis/genesis.csv
