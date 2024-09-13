@@ -36,7 +36,11 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
       collection.owner,
       collection.name,
       collection.creationDateTimestamp,
-      collection.nfts.size.toLong
+      collection.nfts.size.toLong,
+      collection.description,
+      collection.baseModel,
+      collection.uri
+
     )
 
   // private def formatToNFTResponse(nft: NFT): NFTResponse = {
@@ -357,7 +361,7 @@ private def Complete_Decentralizaed_Data_Test(
   ): F[Response[F]] = {
     getState.flatMap { state =>
       state.collections.get(collectionId).flatMap { collection =>
-        collection.nfts.get(nftId).map { nft => Ok(GET_API_KEY(nft, collection)) }
+        collection.nfts.get(nftId).map { nft => Ok(DecentralizedTesting(nft, collection)) }
       }.getOrElse(NotFound())
     }
   }

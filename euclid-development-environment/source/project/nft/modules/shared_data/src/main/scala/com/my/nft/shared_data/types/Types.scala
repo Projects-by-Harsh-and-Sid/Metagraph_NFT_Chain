@@ -85,7 +85,10 @@ object Types {
     owner                : Address,
     name                 : String,
     creationDateTimestamp: Long,
-    numberOfNFTs         : Long
+    numberOfNFTs         : Long,
+    description          : String,
+    baseModel            : String,
+    uri                  : String,
   )
 
   @derive(decoder, encoder)
