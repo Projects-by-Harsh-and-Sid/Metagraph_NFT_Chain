@@ -25,7 +25,10 @@ object Types {
     owner                : Address,
     name                 : String,
     creationDateTimestamp: Long,
-    nfts                 : Map[Long, NFT]
+    nfts                 : Map[Long, NFT],
+    description          : String,
+    baseModel            : String,
+    uri                  : String,
   )
 
   @derive(decoder, encoder)
@@ -33,7 +36,10 @@ object Types {
 
   @derive(decoder, encoder)
   case class MintCollection(
-    name: String
+    name: String,
+    description: String,
+    baseModel: String,
+    uri: String
   ) extends NFTUpdate
 
   @derive(decoder, encoder)
@@ -92,7 +98,16 @@ object Types {
     description          : String,
     creationDateTimestamp: Long,
     metadata             : Map[String, String],
-    AI_data              : String,
-    apiResult            : String
+    // AI_data              : String,
+    // apiResult            : String
   )
+
+
+  @derive(decoder, encoder)
+  case class ApiResponse(
+    hpcEndpoint                   : String,
+    hpcEndpointPort               : String, 
+    apiKey                        : String
+  )
+
 }
