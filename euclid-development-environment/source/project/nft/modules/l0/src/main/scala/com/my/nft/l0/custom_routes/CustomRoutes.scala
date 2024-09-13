@@ -212,7 +212,7 @@ private def DecentralizedTesting(nft: NFT, coll: Collection): DecentralizedTesti
     "nft name" -> nft.name,
     "nft description" -> nft.description,
     "nft owner" -> nft.owner.toString,  // Convert Address to String
-    "test query" -> " Tell me about the Ownership of the NFT along with any specific data or RAG presebt in the NFT"
+    "test query" -> " Describe the key data you have about this NFT and its collection. Be specific about attributes and ownership. Explain your understanding of your purpose in relation to this NFT. What are you designed to do with this information? How does your RAG system enhance your ability to process and respond to queries about this NFT?"
   )
 
   val apiResponse = post(
