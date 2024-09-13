@@ -110,4 +110,10 @@ object Types {
     apiKey                        : String
   )
 
+
+  @derive(decoder, encoder)
+  case class DecentralizedTestingResult(
+    output                   : String,
+  )
+
 }

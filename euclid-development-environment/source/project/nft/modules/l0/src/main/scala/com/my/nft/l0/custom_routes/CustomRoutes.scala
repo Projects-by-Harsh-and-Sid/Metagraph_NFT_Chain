@@ -197,6 +197,42 @@ private def GET_API_KEY(nft: NFT, coll: Collection): ApiResponse = {
 }
 
 
+private def DecentralizedTesting(nft: NFT, coll: Collection): DecentralizedTestingResult = {
+  
+  val requestBody = Map[String, String](
+    "AI_Data" -> nft.AI_data,
+    "baseModel" -> coll.baseModel,
+    "collection owner" -> coll.owner.toString,  // Convert Address to String
+    "collection name" -> coll.name,
+    "collection description" -> coll.description,
+    "nft name" -> nft.name,
+    "nft description" -> nft.description,
+    "nft owner" -> nft.owner.toString,  // Convert Address to String
+    "test query" -> " Tell me about the Ownership of the NFT along with any specific data or RAG presebt in the NFT"
+  )
+
+  val apiResponse = post(
+    "http://192.168.0.142:5500/test_model",
+    data = requestBody.asJson.noSpaces,
+    headers = Map("Content-Type" -> "application/json")
+  )
+
+      // Process the API response
+      val apiResult = if (apiResponse.statusCode == 200) {
+        decode[String](apiResponse.text()).getOrElse("Failed to parse API response")
+      } else {
+        s"API call failed with status code: ${apiResponse.statusCode}"
+      }
+
+
+  DecentralizedTestingResult( apiResult)
+}
+
+
+
+
+
+
 
   
   private def formatToNFTResponse(nft: NFT): NFTResponse = {
@@ -315,6 +351,18 @@ private def GET_API_KEY(nft: NFT, coll: Collection): ApiResponse = {
     }
   }
 
+private def Complete_Decentralizaed_Data_Test(
+    collectionId: String,
+    nftId       : Long
+  ): F[Response[F]] = {
+    getState.flatMap { state =>
+      state.collections.get(collectionId).flatMap { collection =>
+        collection.nfts.get(nftId).map { nft => Ok(GET_API_KEY(nft, collection)) }
+      }.getOrElse(NotFound())
+    }
+  }
+
+
 
   private val routes: HttpRoutes[F] = HttpRoutes.of[F] {
     case GET -> Root / "collections" => getAllCollections
@@ -324,6 +372,7 @@ private def GET_API_KEY(nft: NFT, coll: Collection): ApiResponse = {
     case GET -> Root / "addresses" / AddressVar(address) / "collections" => getAllCollectionsOfAddress(address)
     case GET -> Root / "addresses" / AddressVar(address) / "nfts" => getAllNFTsOfAddress(address)
     case GET -> Root / "collections" / collectionId / "nfts"/ nftId/"getApi" => Generate_API_KEY(collectionId, nftId.toLong)
+    case GET -> Root / "collections" / collectionId / "nfts"/ nftId/"DTest" => Complete_Decentralizaed_Data_Test(collectionId, nftId.toLong)
 
 
   }
