@@ -53,6 +53,7 @@ graph TD
     MN --> SN2
     MN --> SN3
     SN1 --> MT
+    SN1 -."Processing".-> MT
     SN2 --> I
     SN2 -."Processing".-> V
     SN3 -."Processing".-> FT
