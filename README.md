@@ -1,5 +1,13 @@
 # NeuraNFT: Tokenizing Intelligence on Metagraph_NFT_Chain
 
+
+## Other URLs
+
+[Constellation_NFTs_HPC_Node](https://github.com/Projects-by-Harsh-and-Sid/Constellation_NFTs_HPC_Node) </br>
+[Constellation_NFTs_Load_Balancer](https://github.com/Projects-by-Harsh-and-Sid/Constellation_NFTs_Load_Balancer)</br>
+[Constellation_NFTs_Frontend](https://github.com/Projects-by-Harsh-and-Sid/Constellation_NFTs_Frontend)</br>
+[Lite Paper](https://drive.google.com/drive/u/1/folders/1yi291m8lVvO6xK6H7GndjWtDy6N_Lkyb)</br>
+
 ## Table of Contents
 
 1. [Introduction](#introduction)
