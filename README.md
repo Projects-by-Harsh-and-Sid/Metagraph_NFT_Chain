@@ -92,7 +92,153 @@ pkcs12 -provider legacy -provider default -in token-key.p12 -nocerts -nodes -out
 
 
 - harsh chats have code ...
+
 - 
+
+```mermaid
+
+graph TD
+    UI[User Interface]
+    FA[Frontend Application]
+    %% SC[Smart Contracts / Canisters]
+    %% NS[NFT Storage]
+    MN[Load Balancer]
+    SN1[High Performing Node 1]
+    SN2[High Performing Node 2]
+    SN3[High Performing Node 3]
+    %% SN4[Server Node 3]
+    MT[Model Training]
+    V[Vectorization]
+    I[Inference]
+    FT[Fine-tuning]
+    L0[Metagraph L0]
+    L1C[Currency Layer L1]
+    L1D[Data Layer L1]
+    HG[Hypergraph]
+    B1[Block 1]
+    B2[Block 2]
+    SN[Snap]
+    CU[Custom data]
+    TR[TRX]
+
+
+
+    UI --> FA
+    %% FA --> SC
+    FA --"Blockchain Interaction"--> L0
+
+    %% SC --> NS
+    %% SC --> MN
+    %% MN <--> L0
+    MN --"Data Read"--> L0
+    MN --"Data Store"--> L1D
+    MN --> SN1
+    MN --> SN2
+    MN --> SN3
+    SN1 --> MT
+    SN2 --> I
+    SN2 -."Processing".-> V
+    SN3 -."Processing".-> FT
+    SN3 -."Processing".-> I
+    
+
+    SN3 --> I
+    SN3 --> FT
+    %% L1C --> L0
+    %% L1D --> L0
+    %% L0 --> HG
+    L1C --> B2
+    L1D --> B1
+    B1 --> L0
+    B2 --> L0
+    L0 --> SN
+    SN -->HG
+    TR --"Transaction"--> L1C
+    CU --"Custom data"--> L1D
+    FA -."Fetch".-> L1D
+
+
+
+subgraph "Blockchain"
+    subgraph "Metagraph"
+        L1C
+        L1D
+        L0
+        %% HG
+        B1
+        B2
+    end
+    SN
+    HG
+
+end
+
+    subgraph "User Interaction"
+        UI
+        FA
+    end
+
+
+
+    %% subgraph "Constellation Metagraph"
+    %%     SC
+    %%     NS
+    %% end
+
+    subgraph "High-Performance Computing"
+        MN
+        SN1
+        SN2
+        SN3
+    end
+
+    subgraph "Key Components"
+        MT
+        V
+        I
+        FT
+    end
+
+
+    %% %% Connections
+    %% FA -.-> MN
+    %% L1D -.-> SN1
+    %% L1D -.-> SN2
+    %% L1D -.-> SN3
+
+    MN -."Task Distribution".-> SN1
+    MN -."Task Distribution".-> SN2
+    MN -."Task Distribution".-> SN3
+    MN -."Model Interaction".-> UI
+    SN1 --> V
+    SN1 -."Processing".-> MT
+    %% SN1 -. "Processing" .-> MT
+    %% SN2 -. "Processing" .-> V
+    %% SN3 -. "Processing" .-> I
+    %% ServerNode3 -. "Processing" .-> FineTuning
+
+    
+
+
+classDef default fill:#f9f,stroke:#333,stroke-width:2px,color:#000;
+classDef metagraph fill:#ffd700,stroke:#333,stroke-width:2px,color:#000;
+classDef computing fill:#87cefa,stroke:#333,stroke-width:2px,color:#000;
+classDef meta fill:#87cefa,stroke:#333,stroke-width:2px,color:#000;
+classDef data fill:#ffd700,stroke:#333,stroke-width:2px,color:#000;
+classDef Trx fill:#90EE90,stroke:#000000,color:#000;
+
+
+
+    classDef components fill:#ffa07a,stroke:#333,stroke-width:2px;
+
+    class L1D,CU data;
+    class L1C,TR Trx;
+    class L0,HG,B1,B2 meta;
+    %% class L1C,L1D metagraph;
+    class MN,SN1,SN2,SN3 computing;
+    class MT,V,I,FT components;
+
+```
 
 
 Create Account using Stargazer Wallet and copy the private key to setup balance in genesis
